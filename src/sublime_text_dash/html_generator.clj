@@ -6,7 +6,6 @@
 (def base-path "Sublime_Text_Plugin_API.docset/Contents/Resources/Documents/")
 
 (def class-template (html/html-resource "templates/class.html"))
-(def method-template (html/html-resource "templates/method.html"))
 
 (def STATIC-DOCS
   {"2_api_reference.html" "http://www.sublimetext.com/docs/2/api_reference.html"
