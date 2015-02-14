@@ -1,0 +1,12 @@
+/target
+/classes
+/checkouts
+pom.xml
+pom.xml.asc
+*.jar
+*.class
+/.lein-*
+/.nrepl-port
+Sublime_Text_Plugin_API.docset/**/*.html
+Sublime_Text_Plugin_API.docset/**/*.dsidx
+Sublime_Text_Plugin_API.docset/**/sublime_docs.css
