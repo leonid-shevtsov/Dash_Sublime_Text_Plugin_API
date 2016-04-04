@@ -10,3 +10,5 @@ pom.xml.asc
 Sublime_Text_Plugin_API.docset/**/*.html
 Sublime_Text_Plugin_API.docset/**/*.dsidx
 Sublime_Text_Plugin_API.docset/**/sublime_docs.css
+Sublime_Text_Plugin_API.old.docset
+Sublime_Text_Plugin_API.tgz
