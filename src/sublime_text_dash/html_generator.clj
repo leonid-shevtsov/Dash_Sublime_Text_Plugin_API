@@ -9,7 +9,7 @@
 
 (def STATIC-DOCS
   {"2_api_reference.html" "http://www.sublimetext.com/docs/2/api_reference.html"
-   "3_api_reference.html" "http://www.sublimetext.com/docs/2/api_reference.html"
+   "3_api_reference.html" "http://www.sublimetext.com/docs/3/api_reference.html"
    "porting_guide.html" "http://www.sublimetext.com/docs/3/porting_guide.html"
    "sublime_docs.css" "http://www.sublimetext.com/docs/3/sublime_docs.css"})
 

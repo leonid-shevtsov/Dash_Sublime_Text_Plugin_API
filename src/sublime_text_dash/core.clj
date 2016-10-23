@@ -14,8 +14,11 @@
 (defn select-one [doc query]
   (first (html/select doc query)))
 
-(defn is-class-def? [[section-name section-contents]]
-  (and section-name (re-seq #"^(Class|Module)" section-name)))
+(defn is-class-def? [[section-name _section-contents]]
+  (and section-name ((some-fn #(s/starts-with? % "Class")
+                              #(s/starts-with? % "Module")
+                              #(s/ends-with? % "Class")
+                              #(s/ends-with? % "Module")) section-name)))
 
 (defn print-section [[section-name section-contents]]
   (s/join (-> (concat
@@ -44,17 +47,35 @@
     {:doc-block class-doc-block
      :methods (remove #(= (:name %) "(no methods)") (mapcat parse-method-table method-tables))}))
 
-(defn parse-class-def [[section-name section-contents]]
+(defn parse-st2-class-def [[section-name section-contents]]
   (let [[[_ type name]] (re-seq #"^(Class|Module) (.+)$" section-name)]
     (assoc (parse-class-docs section-contents) :name name :type type)))
 
-(defn parse-docs [doc]
-  (let [partitions (partition-by #(= (:tag %) :h2) (:content (select-one doc [:body])))
+(defn parse-st3-class-def [[section-name section-contents]]
+  (let [[[_ name type]] (re-seq #"^(.+) (Class|Module)$" section-name)]
+    (assoc (parse-class-docs section-contents) :name name :type type)))
+
+(defn partition-by-h2 [tag]
+  (partition-by #(= (:tag %) :h2) (:content tag)))
+
+(defn parse-st2-docs [doc]
+  (let [partitions (partition-by-h2 (select-one doc [:body]))
         sections (cons [nil (first partitions)] (map (fn [[[header] contents]] [(first (:content header)) contents]) (partition 2 (rest partitions))))
         [non-class-defs class-defs] (split-with (complement is-class-def?) sections)]
     {:doc-block (map print-section non-class-defs)
-     :classes (map parse-class-def class-defs)
-     }))
+     :classes (map parse-st2-class-def class-defs)}))
+
+(defn parse-st3-section [section]
+  (let [[_before-h2 [h2] & contents] (partition-by-h2 section)]
+    [(html/text h2) (apply concat contents)]))
+
+(defn parse-st3-docs [doc]
+  (let [doc-sections (drop 2 (html/select doc [:section])) ; drop header and contents table
+        sections (map parse-st3-section doc-sections)
+        [non-class-defs class-defs] (split-with (complement is-class-def?) sections)]
+    {:doc-block (map print-section non-class-defs)
+     :classes (map parse-st3-class-def class-defs)}))
+
 
 (defn versionize-class [version class-doc]
   (assoc class-doc
@@ -71,8 +92,8 @@
     (first method-defs)
     :versions (into #{} (map :version method-defs))
     :version-data (map
-                #(assoc (first %) :versions (into #{} (map :version %)))
-                (vals (group-by #(str (:name %) (:returns %) (:doc %)) method-defs)))))
+                   #(assoc (first %) :versions (into #{} (map :version %)))
+                   (vals (group-by #(str (:name %) (:returns %) (:doc %)) method-defs)))))
 
 (defn merge-class-def [class-defs]
   (assoc
@@ -90,8 +111,8 @@
 
 (defn -main
   [& args]
-  (let [[st2-docs st3-docs] (map versionize-doc [:st2 :st3] (map #(-> % fetch-url parse-docs) [st2-api-url st3-api-url]))
+  (let [[st2-docs st3-docs] (map versionize-doc [:st2 :st3] (map #(-> %1 fetch-url %2) [st2-api-url st3-api-url] [parse-st2-docs parse-st3-docs]))
         merged-docs (merge-classes st2-docs st3-docs)]
     (generate-html merged-docs)
-    (write-index merged-docs)
-    ))
+    (write-index merged-docs)))
+
