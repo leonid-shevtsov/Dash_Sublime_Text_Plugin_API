@@ -1,7 +1,7 @@
 (ns sublime-text-dash.html-generator
   (:require [net.cgrand.enlive-html :as html]
-            [clojure.string :as s])
-  )
+            [clojure.string :as s]))
+
 
 (def base-path "Sublime_Text_Plugin_API.docset/Contents/Resources/Documents/")
 
@@ -11,8 +11,8 @@
   {"2_api_reference.html" "http://www.sublimetext.com/docs/2/api_reference.html"
    "3_api_reference.html" "http://www.sublimetext.com/docs/2/api_reference.html"
    "porting_guide.html" "http://www.sublimetext.com/docs/3/porting_guide.html"
-   "sublime_docs.css" "http://www.sublimetext.com/docs/3/sublime_docs.css"
-   })
+   "sublime_docs.css" "http://www.sublimetext.com/docs/3/sublime_docs.css"})
+
 
 (defn version-label-class [{:keys [:versions :version-data]}]
   (cond
@@ -31,8 +31,8 @@
 (defn version-label [versioned]
   (html/do->
     (html/set-attr :class (version-label-class versioned))
-    (html/content (version-label-text versioned)))
-  )
+    (html/content (version-label-text versioned))))
+
 
 
 (defn generate-class-doc [class-doc]
@@ -51,13 +51,13 @@
                                               [:.version-label] (version-label version)
                                               [:.method-syntax] (html/html-content (:name version))
                                               [:.returns] (html/html-content (:returns version))
-                                              [:.doc] (html/html-content (:doc version)))
-                                )
+                                              [:.doc] (html/html-content (:doc version))))
+
                     [:.generation-date] (html/content (str (java.util.Date.))))
                  html/emit*
                  s/join)]
-    (spit filename html)
-  ))
+    (spit filename html)))
+
 
 (defn generate-html [docs]
   (doseq [class (:classes docs)]
