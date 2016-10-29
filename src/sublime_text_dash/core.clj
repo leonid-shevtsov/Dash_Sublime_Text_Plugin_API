@@ -52,8 +52,8 @@
     (assoc (parse-class-docs section-contents) :name name :type type)))
 
 (defn parse-st3-class-def [[section-name section-contents]]
-  (let [[[_ name type]] (re-seq #"^(.+) (Class|Module)$" section-name)]
-    (assoc (parse-class-docs section-contents) :name name :type type)))
+  (let [[[_ name type]] (re-seq #"^(.+)(Class|Module)$" section-name)]
+    (assoc (parse-class-docs section-contents) :name (s/trim name) :type type)))
 
 (defn partition-by-h2 [tag]
   (partition-by #(= (:tag %) :h2) (:content tag)))
