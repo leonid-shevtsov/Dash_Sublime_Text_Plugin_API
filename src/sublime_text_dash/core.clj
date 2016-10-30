@@ -37,7 +37,7 @@
     {:short-name short-name, :name name, :returns returns, :doc doc}))
 
 (defn parse-method-table [method-table]
-  (let [type (get {"Constructors" "Constructor" "Methods" "Method" "Properties" "Property"} (html/text (first (html/select method-table [:th]))))
+  (let [type (get {"Constructors" "Constructor" "Class Methods" "Method" "Methods" "Method" "Properties" "Property"} (html/text (first (html/select method-table [:th]))))
         method-trs (html/select method-table [[:tr (html/has [:td])]])]
     (map #(assoc (parse-method-tr %) :type type) method-trs)))
 
