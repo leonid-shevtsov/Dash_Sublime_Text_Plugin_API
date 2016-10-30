@@ -12,11 +12,11 @@
   (.delete (File. (:subname db)))
   (try (db-do-commands db
                        (create-table-ddl :searchIndex
-                                         [:id :integer :primaryKey]
-                                         [:name :text]
-                                         [:type :text]
-                                         [:path :text])
-                       "CREATE UNIQUE INDEX anchor ON searchIndex (name, type, path)")
+                                         [[:id :integer :primary :key :autoincrement]
+                                          [:name :text]
+                                          [:type :text]
+                                          [:path :text]]))
+       (db-do-commands db "CREATE UNIQUE INDEX anchor ON searchIndex (name, type, path)")
 
        (catch Exception e (println e))))
 

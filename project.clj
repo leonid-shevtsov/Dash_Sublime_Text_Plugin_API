@@ -6,8 +6,8 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [enlive "1.1.5"]
                  [org.clojure/data.json "0.2.5"]
-                 [org.clojure/java.jdbc "0.3.5"]
-                 [org.xerial/sqlite-jdbc "3.7.2"]]
+                 [org.clojure/java.jdbc "0.6.2-alpha3"]
+                 [org.xerial/sqlite-jdbc "3.14.2.1"]]
   :main ^:skip-aot sublime-text-dash.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
